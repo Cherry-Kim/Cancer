@@ -5,7 +5,7 @@
 ###############################################
 BiocManager::install("tximportData")
 library(tximport)
-path.case = "/home/hykim/Project/Cancer/Colon/RNA-seq/Quantified_Gene_Expression/"
+path.case = "/home/hykim/RNA-seq/"
 
 files_N <- list.files(path = path.case, pattern = "N.genes.results$", full.names = TRUE)
 files_T <- list.files(path = path.case, pattern = "T.genes.results$", full.names = TRUE)
@@ -85,11 +85,5 @@ for (deg in deg_all) {
 #head(deg2)
 ##logFC  AveExpr        t      P.Value    adj.P.Val        B symbol
 
-emat <- counts
-cms <- res$prediction
-train <- sample(seq_along(cms), size=length(cms)/(2))
-deg <- subDEG(emat[,train], class=cms[train], doVoom=TRUE)
-templates <- ntpMakeTemplates(deg, resDEG=TRUE, topN=50)
-templates$symbol <- fromTo(templates$probe)
-st <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","entrezgene_id", "description"),values=genes,mart= mart)
+
 
