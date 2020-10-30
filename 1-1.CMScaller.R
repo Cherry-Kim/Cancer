@@ -58,7 +58,9 @@ write.table(df, "edgeR_input_ENTREZ.txt", col.names=NA, row.names=T, quote=F,sep
 
 ###############################################
 ### STEP3. CMScaller
-###############################################
+#########################################
+install.packages("devtools")
+devtools::install_github("Lothelab/CMScaller", force=TRUE)
 library(CMScaller)
 df1 <- read.table("edgeR_input_ENTREZ.txt", sep='\t',header=T, stringsAsFactors=F)
 A<-df1$entrezgene_id
