@@ -19,17 +19,17 @@ mymrnaprofile=getGeneticProfiles(mycgds,mycancerstudy)[8,1]
 #mymethylationprofile=getGeneticProfiles(mycgds,mycancerstudy)[5,1] 
 
 ##### 3-1. Get mutation profiles for genes
-AST_mutation = getMutationData(mycgds,mycaselist,mymutationprofile,c('BTG2','AKNA') ) 
+AST_mutation = getMutationData(mycgds,mycaselist,mymutationprofile,c('BRACA1','BRACA2') ) 
 head(AST_mutation)
 table(AST_mutation$gene_symbol) 
 
-AKNA_mutated_cases2 <- AST_mutation[which(AST_mutation$gene_symbol=='AKNA'),3]	#3: case_id
-AKNA_mutated_cases <- paste0("X",AKNA_mutated_cases2)
-head(AKNA_mutated_cases)
+BRACA1_mutated_cases2 <- AST_mutation[which(AST_mutation$gene_symbol=='BRACA1'),3]	#3: case_id
+BRACA1_mutated_cases <- paste0("X",AKNA_mutated_cases2)
+head(BRACA1_mutated_cases)
 #brca2_mutated_cases <- brca_mutation[which(brca_mutation$gene_symbol=='BRCA2'),3]
 
 ##### 3-2. Extract samples with BRCA1, BRCA2 methylation
-AST_mirna = getProfileData(mycgds, c('BTG2','AKNA'),myrnaprofile, mycaselist)
+AST_mirna = getProfileData(mycgds, c('BRACA1','BRACA2'),myrnaprofile, mycaselist)
 #brca_methylation = getProfileData(mycgds, c('BRCA1','BRCA2'),mymethylationprofile, mycaselist)
 head(AST_mirna)
 AKNA_mirna_cases = rownames(AST_mirna[which(AST_mirna$AKNA>1.0 | AST_mirna$AKNA < -1.0),])
@@ -50,11 +50,11 @@ head(type)
 AKNA_mutated_cases = gsub("-",".",AKNA_mutated_cases) #- -> .
 AKNA_mirna_cases = gsub("-",".",AKNA_mutated_cases)
 
-type[AKNA_mutated_cases] <- "AKNA_mutation"
-type[AKNA_mirna_cases] <- "AKNA_mirna"
+type[AKNA_mutated_cases] <- "BRACA1_mutation"
+type[AKNA_mirna_cases] <- "BRACA1_mirna"
 
 type <- type[names(type) %in% rownames(myclinicaldata)]
-type <- factor(type, levels= c("Wild","AKNA_mutation","AKNA_mirna") )
+type <- factor(type, levels= c("Wild","BRACA1_mutation","BRACA1_mirna") )
 
 ##### 6. Survival Analysis
 #install.packages('survival')
@@ -67,53 +67,5 @@ coxph(Surv(OS_MONTHS, OS_STATUS=="1:DECEASED") ~ type, data=myclinicaldata)
 
 color <- c("Blue", "Red") 
 #color <- c("black","Skyblue","Blue", "Red") 
-plot(out, col=color , main="Association of BRCA1/2 Mutations with Survival", xlab="Time,days", ylab="Proportion", lty=1:2, lwd=2)
+plot(out, col=color , main="Association of BRCA1 Mutations with Survival", xlab="Time,days", ylab="Proportion", lty=1:2, lwd=2)
 legend("topright", levels(type), col=color, lty=1:2, lwd=3) 
-
-###############################
-# survminer ggplot 
-install.packages("survminer")
-install.packages("ggpubr")
-#if(!require(devtools)) install.packages("devtools")
-#devtools::install_github("kassambara/survminer")
-library("survminer")
-
-ggsurvplot_res <- ggsurvplot(out, data=myclinicaldata, pval=T, risk.table=T, conf.int=F, break.time.by = 30, legend.title = "Patient types", risk.table.fontsize = 2.5,surv.plot.height = 0.45, legend="right")
-
-##########   CASE II  #########
-##   expression data download link  http://www.snubi.org/R_seminar/case.zip
-
-#####  1. Get the Expression data
-expression <- read.delim('expression.csv', sep=",", header=T, stringsAsFactors = F)
-
-dim(expression)
-length(unique(rownames(expression)))  
-
-#####  2. Check variability of gene expression across patients, using MAD
-myMad <- function(x){mad(x, na.rm=T)}
-result <- apply(expression, 1, myMad)
-
-#####  3. Get the highest variablity genes
-result2 <- sort(result, decreasing=T)[1:100] 
-exp_result <- expression[which(rownames(expression)%in%names(result2)),]
-
-#####  4. Install NMF package
-install.packages("NMF")
-library(NMF)
-
-#####  5. Make the values non-negative
-nonNegativeFx <- function(x){a <- min(x)
-if(a<0){
-  a <- a*(-1)
-  b <- x + a}
-else{
-  b <- x }
-return(b)}
-
-res2 <- apply(exp_result,1, nonNegativeFx) 
-res2 <- as.data.frame(res2)
-
-#####  6. Draw heatmap and NMF analysis
-nmf_res <- nmf(res2, 2:6, nrun=10, seed=123456)
-plot(nmf_res)
-consensusmap(nmf_res, annCol = colnames(nmf_res), labCol = NA, labRow = NA)
