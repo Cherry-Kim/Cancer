@@ -1,12 +1,12 @@
 import requests
 import string,sys,os,glob
 
-GENE=['AKNA','BCL11A_ENST00000356842','BTG2','EAF2','GATA1','GFI1B','IKZF1_ENST00000331340','IKZF3','IRF5','IRF8','JUNB','KLF1','KLF2','MYB','NFE2_ENST00000435572','POU2F2','TAL1','TCF7','SPI1_ENST00000378538','SPIB']
+GENE=['BRACA1','BCL11A_ENST00000356842','IKZF1_ENST00000331340','BRACA2']
 
 def DOWNLOAD(omics):
 	print omics
-	email    = "kin2844@yuhs.ac"
-	password = "Wnqkf9988!"
+	email    = "k@snu.ac"
+	password = "!"
 	url      = "https://cancer.sanger.ac.uk/cosmic/file_download/GRCh37/cosmic/v90/"
 
 	r = requests.get(url+omics, auth=(email, password))
@@ -18,7 +18,7 @@ def DOWNLOAD(omics):
 
 
 def Point_mutation(Pname):
-	PGENE=['AKNA_ENST00000307564','BCL11A_ENST00000356842','BTG2_ENST00000290551','EAF2_ENST00000273668','GATA1_ENST00000376670','GFI1B_ENST00000339463','IKZF1_ENST00000331340','IKZF3_ENST00000346872','IRF5_ENST00000357234','IRF8_ENST00000268638','JUNB_ENST00000302754','KLF1_ENST00000264834','KLF2_ENST00000248071','MYB_ENST00000341911','NFE2_ENST00000435572','POU2F2_ENST00000526816','TAL1_ENST00000294339','TCF7_ENST00000342854','SPI1_ENST00000378538','SPIB_ENST00000595883']
+	PGENE=['BRACA1_ENST00000307564','BCL11A_ENST00000356842','BRACA2_ENST00000331340']
 	fp=open(Pname,'r')
 	hd=fp.readline()
 	fpout=open('Point_mutaion.txt','w')
@@ -77,7 +77,7 @@ def Expression(Ename):
 	fp.readline()
 	fpout=open('expression.txt','w')
 	for line in fp:
-	        line_temp=line.split('\t') #['2121645', 'TCGA-EE-A29S-06', 'DNAJC2', 'normal', '       0.066', '540\n']
+	        line_temp=line.split('\t') 
        		for i in GENE:
                		if i==line_temp[2]:
                        		fpout.write(line)
@@ -86,14 +86,14 @@ def Expression(Ename):
 
 def Main():
 	Files = ['CosmicMutantExport.tsv.gz','CosmicCompleteDifferentialMethylation.tsv.gz','CosmicCompleteCNA.tsv.gz','CosmicCompleteGeneExpression.tsv.gz']
-#	for omics in Files:
-#		DOWNLOAD(omics)
-#	Pname = Files[0].split('.gz')[0]
-#	Point_mutation(Pname)
-#	Mname = Files[1].split('.gz')[0]
-#	Methylation(Mname)
-#	Cname = Files[2].split('.gz')[0]
-#	CNV(Cname)
+	for omics in Files:
+		DOWNLOAD(omics)
+	Pname = Files[0].split('.gz')[0]
+	Point_mutation(Pname)
+	Mname = Files[1].split('.gz')[0]
+	Methylation(Mname)
+	Cname = Files[2].split('.gz')[0]
+	CNV(Cname)
 	Ename = Files[3].split('.gz')[0]
 	Expression(Ename)
 Main()
