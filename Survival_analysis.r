@@ -31,7 +31,7 @@ Survival_rna <- function (
 	library(survival)
 	library(survminer)
 	BCL11A_fit <- survfit(Surv(OS_MONTHS, OS_STATUS=="1:DECEASED")~type, data=myclinicaldata)
-
+        # fit < survfit(Surv(time, status) ~ sex, data=data)
 	png("b.png")
 	ggsurvplot(BCL11A_fit, data=myclinicaldata, pval=T, risk.table=T, conf.int=F, break.time.by = 50, legend.title = "Patient types", risk.table.fontsize = 2.5,surv.plot.height = 0.45, legend="right")
 	dev.off()
