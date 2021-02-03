@@ -12,15 +12,14 @@ Survival_rna <- function (
 	getCaseLists(mycgds,mycancerstudy)[,1]	#[8] "coadread_tcga_pan_can_atlas_2018_rna_seq_v2_mrna"
 	mycaselist = getCaseLists(mycgds,mycancerstudy)[8,1]
 
-	#
+	
 	getGeneticProfiles(mycgds,mycancerstudy)[,1]	#[4] "coadread_tcga_pan_can_atlas_2018_rna_seq_v2_mrna"
 	myrnaprofile = getGeneticProfiles(mycgds,mycancerstudy)[4,1]
 	AST_mirna = getProfileData(mycgds, genes=GENE, myrnaprofile, mycaselist)
 	BCL11A_mirna_cases = rownames(AST_mirna[which(AST_mirna$BCL11A>1.5), ,drop=F])
 	##### 4. Clinical data integration
 	myclinicaldata = getClinicalData(mycgds,mycaselist)
-	myclinicaldata$OS_STATUS[myclinicaldata$OS_STATUS == ""] <- NA	#"" -> NA
-#"0:LIVING"   "1:DECEASED"
+	myclinicaldata$OS_STATUS[myclinicaldata$OS_STATUS == ""] <- NA	#"" -> NA  #"0:LIVING"   "1:DECEASED"
 	total_sample <- rownames(myclinicaldata) 
 	type <- rep('Wild', length(total_sample))
 	names(type) <- total_sample
