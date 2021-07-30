@@ -52,6 +52,7 @@ df$entrezgene_id=""
 df["entrezgene_id"] = lapply("entrezgene_id", function(x) G_list[[x]][match(df$X, G_list$ensembl_gene_id)])
 
 #G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","hgnc_symbol", "description"),values=genes,mart= mart)
+##G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","entrezgene_id", "mgi_symbol", "description"), values=genes, mart= mart)
 #df$hgnc_symbol = "" 
 #df["hgnc_symbol"] = lapply("hgnc_symbol", function(x) G_list[[x]][match(df$X, G_list$ensembl_gene_id)]) 
 
