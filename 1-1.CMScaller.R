@@ -40,6 +40,7 @@ library('biomaRt')
 
 df <- read.table("edgeR_input.txt",sep='\t',header=T,stringsAsFactors=F)
 mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+#mart <- useDataset("mmusculus_gene_ensembl", useMart("ensembl"))
 
 for (i in 1:length(df$X)){     
 	df$X[i] <- unlist(strsplit(df$X[i], fixed=TRUE, split="."))[1]
